@@ -143,13 +143,21 @@ var app = {
                     dir: '+',
                     max: 255,
                     min: 150,
+<<<<<<< HEAD
                     change: 1
+=======
+                    change: 2
+>>>>>>> d6b0a22fab2ef1359dc508ef88cde762c675c9fe
                 };
                 this.green = app.additional.clone(this.red);
                 this.green.max = 150;
                 this.green.min = 30;
                 this.green.val = 30;
+<<<<<<< HEAD
                 this.green.change = .5;
+=======
+                this.green.change = 1;
+>>>>>>> d6b0a22fab2ef1359dc508ef88cde762c675c9fe
 
                 this.blue = app.additional.clone(this.red);
                 this.blue.val = 0;
