@@ -39,8 +39,13 @@
       <file leaf-file-name="app.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/js/app.js">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state vertical-scroll-proportion="0.2663892" vertical-offset="1799" max-vertical-offset="3420">
               <caret line="151" column="38" selection-start-line="151" selection-start-column="38" selection-end-line="151" selection-end-column="38" />
+=======
+            <state vertical-scroll-proportion="0.48491156" vertical-offset="2414" max-vertical-offset="3420">
+              <caret line="206" column="70" selection-start-line="206" selection-start-column="70" selection-end-line="206" selection-end-column="70" />
+>>>>>>> d6b0a22fab2ef1359dc508ef88cde762c675c9fe
               <folding>
                 <element signature="e#3581#3846#0" expanded="false" />
                 <element signature="e#3890#3992#0" expanded="false" />
@@ -361,8 +366,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js/app.js">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state vertical-scroll-proportion="0.2663892" vertical-offset="1799" max-vertical-offset="3420">
           <caret line="151" column="38" selection-start-line="151" selection-start-column="38" selection-end-line="151" selection-end-column="38" />
+=======
+        <state vertical-scroll-proportion="0.48491156" vertical-offset="2414" max-vertical-offset="3420">
+          <caret line="206" column="70" selection-start-line="206" selection-start-column="70" selection-end-line="206" selection-end-column="70" />
+>>>>>>> d6b0a22fab2ef1359dc508ef88cde762c675c9fe
           <folding>
             <element signature="e#3581#3846#0" expanded="false" />
             <element signature="e#3890#3992#0" expanded="false" />

@@ -144,13 +144,13 @@ var app = {
                     max: 255,
                     min: 150,
                     change: 1
+
                 };
                 this.green = app.additional.clone(this.red);
                 this.green.max = 150;
                 this.green.min = 30;
                 this.green.val = 30;
                 this.green.change = .5;
-
                 this.blue = app.additional.clone(this.red);
                 this.blue.val = 0;
                 return this.getRgbColor()
