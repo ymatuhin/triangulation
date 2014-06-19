@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html ng-app="app">
+<title>HTML5 canvas</title>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+    }
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
+    #canv {
+        position: fixed;
+        left: 0;
+        top: 0;
+        margin: 0;
+    }
+</style>
+
+<canvas id="canv" width="800" height="400"></canvas>
+
+<script>
+    var canv = document.getElementById('canv');
+    var body = document.documentElement;
+    canv.width = body.clientWidth;
+    canv.height = body.clientHeight;
+</script>
+
+<script src="js/assets/jquery-1.11.1.min.js"></script>
+<script src="js/assets/poly2tri.min.js"></script>
+<script src="js/app.js"></script>
+</html>
