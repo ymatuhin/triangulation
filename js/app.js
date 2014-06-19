@@ -10,6 +10,7 @@ var app = {
     dots: {
         arr: [],
         outine: [],
+        inner: [],
         genOutline: function () {
             var range = 20;
             var dotInLine = 5;
@@ -51,17 +52,27 @@ var app = {
 
             app.swctx = new poly2tri.SweepContext(app.dots.outine);
         },
+        genInnerDots: function () {
+            for (var i = 0; i < 100; i++) {
+                point = {x: app.additional.getRandomInt(0, app.canvas.w - 40), y: app.additional.getRandomInt(0, app.canvas.h - 40)};
+
+                if (this.checkPoint(point)) {
+                    this.inner.push(point);
+                    var pt = new poly2tri.Point(point.x, point.y);
+                    app.swctx.addPoint(pt);
+                } else {
+                    --i;
+                }
+            }
+        },
         checkPoint: function (point) {
             var rez = true;
-            for (var i = 0; i < arr.length; i++) {
-                if (arr[i].x == point.x || arr[i].y == point.y) {
-                    console.log('checkPoint');
+            for (var i = 0; i < this.inner.length; i++) {
+                if (this.inner[i].x == point.x || this.inner[i].y == point.y) {
                     rez = false;
                 }
             };
             return rez;
-        },
-        addNewDot: function () {
         }
     },
     additional: {
@@ -88,28 +99,70 @@ var app = {
             // поэтому можно записать и как return '#'+Math.floor(Math.random()*0xffffff).toString(16);
             return '#' + Math.floor(Math.random() * 16777215).toString(16);
         },
-        getRgbColor: function (type) {
-            if (type == 'start') {
-                this.red = 50;
-                this.green = 30;
-                this.blue = 0;
-                this.genericRgb =  'rgb(' + this.red + ',' + this.green + ',' + this.blue + ')';
+        changeColor: function (colors) {
+            if (this.red.dir == '+') {
+                if (colors.red.val + colors.red.change > colors.red.max) {
+                    colors.red.dir = '-';
+                    colors.green.dir = '-';
+                    colors.red.val -= colors.red.change;
+                } else {
+                    colors.red.val += colors.red.change;
+                }
             } else {
-//                this.red += (this.getRandomInt(0, 1)) ? 10 : -10;
-//                this.green += (this.getRandomInt(0, 1)) ? 10 : -10;
-//                this.blue += (this.getRandomInt(0, 1)) ? 10 : -10;
-
-                this.red += 2;
-                this.green += 1;
-
-//                this.red += (this.red > 255) ? -15 : (this.red < 0) ? 15 : 0;
-//                this.green += (this.red > 255) ? -15 : (this.red < 0) ? 15 : 0;
-//                this.blue += (this.red > 255) ? -15 : (this.red < 0) ? 15 : 0;
-
-
-                this.genericRgb =  'rgb(' + this.red + ',' + this.green + ',' + this.blue + ')';
+                if (colors.red.val < colors.red.min) {
+                    colors.red.dir = '+';
+                    colors.green.dir = '+';
+                    colors.red.val += colors.red.change;
+                } else {
+                    colors.red.val -= colors.red.change;
+                }
             }
-            return this.genericRgb
+
+            if (colors.green.dir == '+') {
+                if (colors.green.val + colors.green.change > colors.green.max) {
+                    colors.green.dir = '-';
+                    colors.red.dir = '-';
+                    colors.green.val -= colors.green.change;
+                } else {
+                    colors.green.val += colors.green.change;
+                }
+            } else {
+                if (colors.green.val < colors.green.min) {
+                    colors.green.dir = '+';
+                    colors.red.dir = '+';
+                    colors.green.val += colors.green.change;
+                } else {
+                    colors.green.val -= colors.green.change;
+                }
+            }
+        },
+        generateRgbColor: function (type) {
+            if (type == 'start') {
+                this.red = {
+                    val: 150,
+                    dir: '+',
+                    max: 255,
+                    min: 150,
+                    change: 2
+                };
+                this.green = app.additional.clone(this.red);
+                this.green.max = 150;
+                this.green.min = 30;
+                this.green.val = 30;
+                this.green.change = 1;
+
+                this.blue = app.additional.clone(this.red);
+                this.blue.val = 0;
+                return this.getRgbColor()
+            } else {
+                this.changeColor(this);
+            }
+        },
+        getRgbColor: function () {
+            return this.genericRgb = 'rgb(' + this.red.val + ',' + this.green.val + ',' + this.blue.val + ')';
+        },
+        getColorObj: function () {
+            return {red: this.red, green: this.green, blue: this.blue}
         }
     },
     canvas: {
@@ -117,14 +170,18 @@ var app = {
         ctx: undefined,
         w: undefined,
         h: undefined,
+        clearCanvas: function () {
+            this.ctx.save();
+            this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+            this.ctx.clearRect(0, 0, this.w, this.h);
+            this.ctx.restore();
+        },
         setCanvasProp: function () {
             this.ctx = this.el.getContext('2d');
             this.w = this.el.width;
             this.h = this.el.height;
         },
         drawTriangle: function (obj1, obj2, obj3, color) {
-            console.log(obj1);
-
             var ctx = this.ctx;
             ctx.beginPath();
             ctx.moveTo(obj1.x, obj1.y);
@@ -136,33 +193,43 @@ var app = {
             ctx.strokeStyle = color;
             ctx.fill();
             ctx.stroke();
+        },
+        drawStartCanvas: function () {
+            app.swctx.triangulate();
+            this.triangles = app.swctx.getTriangles();
+            app.additional.generateRgbColor('start');
+
+            this.triangles.sort(function(a, b){
+                return Math.min(a.points_[0].x, a.points_[1].x, a.points_[2].x) - Math.min(b.points_[0].x, b.points_[1].x, b.points_[2].x)
+            });
+
+
+            for (var i = 0, lg = this.triangles.length; i < lg; i++) {
+                this.triangles[i].color = app.additional.getColorObj();
+                app.additional.generateRgbColor();
+                this.drawTriangle(this.triangles[i].points_[0], this.triangles[i].points_[1], this.triangles[i].points_[2], app.additional.getRgbColor())
+            }
+        },
+        colorAnim: function () {
+            app.canvas.clearCanvas();
+            for (var i = 0, lg = app.canvas.triangles.length; i < lg; i++) {
+                app.additional.changeColor(app.canvas.triangles[i].color);
+                app.canvas.drawTriangle(app.canvas.triangles[i].points_[0], app.canvas.triangles[i].points_[1], app.canvas.triangles[i].points_[2], app.additional.getRgbColor())
+            }
+            setTimeout(function () {
+                requestAnimationFrame(app.canvas.colorAnim);
+            }, 60)
         }
     },
     init: function () {
         this.canvas.setCanvasProp();
         this.dots.genOutline();
+        this.dots.genInnerDots();
+        this.canvas.drawStartCanvas();
 
+        requestAnimFrame(app.canvas.colorAnim);
 
-        for (var i = 0; i < 55; i++) {
-             point = {x: app.additional.getRandomInt(0, app.canvas.w - 40), y: app.additional.getRandomInt(0, app.canvas.h - 40)};
-             var pt = new poly2tri.Point(point.x, point.y);
-             this.swctx.addPoint(pt);
-        }
-
-        console.log(this.swctx);
-        this.swctx.triangulate();
-        var triangles = this.swctx.getTriangles();
-        console.log(triangles.length);
-        this.additional.getRgbColor('start');
-        console.log('triangles.length', triangles.length);
-
-        triangles.sort(function(a, b){
-            return Math.min(a.points_[0].x, a.points_[1].x, a.points_[2].x) - Math.min(b.points_[0].x, b.points_[1].x, b.points_[2].x)
-        });
-
-        for (var i = 0; i < triangles.length; i++) {
-            this.canvas.drawTriangle(triangles[i].points_[0], triangles[i].points_[1], triangles[i].points_[2], this.additional.getRgbColor())
-        };
+        console.log('triangles', this.canvas.triangles);
 
     }
 };
