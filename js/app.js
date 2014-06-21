@@ -64,6 +64,7 @@ var app = {
                     --i;
                 }
             }
+
         },
         checkPoint: function (point) {
             var rez = true;
@@ -87,17 +88,6 @@ var app = {
         getRandomInt: function (min, max) {
             var rand = min + Math.random() * (max + 1 - min);
             return rand ^ 0;
-        },
-        getRH: function () {
-            return this.getRandomInt(0, app.canvas.h);
-        },
-        getRW: function () {
-            return this.getRandomInt(0, app.canvas.w);
-        },
-        randomHexColor: function () {
-            // число 16777215 (дес. система) равно 0xffffff (шестн. система),
-            // поэтому можно записать и как return '#'+Math.floor(Math.random()*0xffffff).toString(16);
-            return '#' + Math.floor(Math.random() * 16777215).toString(16);
         },
         changeColor: function (colors) {
             if (this.red.dir == '+') {
